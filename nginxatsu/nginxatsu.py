@@ -93,7 +93,7 @@ class cookie_bsqli:
 		self.deserialized_data[b'order'] = payload
 		
 		"""
-		Next we re-serialized the cookie containing the payload and user and json encode it with the correct separators
+		Next we re-serialized the cookie containing the payload and user and json encode it
 		"""
 		serialized_data = phpserialize.dumps(self.deserialized_data)
 		new_data = {'data':serialized_data.decode(), 'expires':int(time.time()+60*60)}
