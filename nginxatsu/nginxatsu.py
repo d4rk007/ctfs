@@ -81,7 +81,6 @@ class cookie_bsqli:
 		return phpserialize.loads(value_data['data'].encode())
 
 	def __send_payload(self, payload_fstr, pos, ch):
-
 		"""
 		Now we extract the 'data' php serialize()'d string from the decrypted json "value" data
 		"""
