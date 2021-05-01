@@ -142,7 +142,7 @@ class cookie_bsqli:
 				t.start()
 				thrds.append(t)
 				while len(thrds) == MAX_THRDS:
-					time.sleep(0.005)
+					sleep(0.005)
 					for thrd in thrds:
 						if not thrd.is_alive():
 							thrds.remove(thrd)
@@ -151,7 +151,7 @@ class cookie_bsqli:
 
 		for thrd in thrds:
 			while (thrd.is_alive()):
-				time.sleep(0.5)
+				sleep(0.5)
 		return self.__sort_data()
 
 # target db = 'nginxatsu'
