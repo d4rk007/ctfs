@@ -82,10 +82,6 @@ class cookie_bsqli:
 
 	def __send_payload(self, payload_fstr, pos, ch):
 		"""
-		Now we extract the 'data' php serialize()'d string from the decrypted json "value" data
-		"""
-
-		"""
 		We now have the target cookie data that we can inject with our constructed BLIND-SQLI payload
 		"""
 		payload = payload_fstr.format(pos=pos, ch=ch)
