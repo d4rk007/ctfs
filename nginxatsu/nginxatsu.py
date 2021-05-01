@@ -154,7 +154,6 @@ class cookie_bsqli:
 				time.sleep(0.5)
 		return self.__sort_data()
 
-
 # target db = 'nginxatsu'
 # target table = 'definitely_not_a_flaaag'
 # target column = 'flag_xxxxx' row = '<flag>'
