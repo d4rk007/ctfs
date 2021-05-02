@@ -50,9 +50,9 @@ class cookie_bsqli:
 		return b64decode(key_str)
 
 	@staticmethod
-	def __get_cookie(cookies, cookie_str):
+	def __get_cookie(cookies, cookie_id):
 		for cookie in cookies:
-			if cookie_str not in cookie:
+			if cookie_id not in cookie:
 				return cookie
 
 	def __decode_cookie(self):
@@ -77,7 +77,6 @@ class cookie_bsqli:
 		"""
 		json_val = self.aes.decrypt(encrypted_val, self.aes.iv)
 		value_data = json.loads(json_val)
-
 		return phpserialize.loads(value_data['data'].encode())
 
 	def __send_payload(self, payload_fstr, pos, ch):
