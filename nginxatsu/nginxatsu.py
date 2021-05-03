@@ -17,7 +17,7 @@ from threading import Thread
 from time import sleep
 
 BASE_URL = 'http://<nginxatsu_ip>:<port>/'
-MAX_THRDS = 15
+MAX_THRDS = 15 # If character overlap occurs decrease the MAX_THRDS int
 
 class Aes:
 	def __init__(self, key):
