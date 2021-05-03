@@ -100,7 +100,6 @@ class cookie_bsqli:
 		"""
 		return json.dumps(self.cookie_dict).encode()
 
-
 	def __encrypt_value(self, payload_fstr, pos, ch):
 		"""
 		We now have the target cookie data that we can inject with our constructed BLIND-SQLI payload
