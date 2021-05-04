@@ -141,9 +141,6 @@ class cookie_bsqli:
 				found_ch = ch
 			self.exfil_data[pos] = found_ch
 			print("Char found:", found_ch, "At index:", pos)
-			return True
-		else:
-			return False
 
 	def __sort_data(self):
 		data = dict(sorted(self.exfil_data.items())).values()
