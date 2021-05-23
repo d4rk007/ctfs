@@ -167,7 +167,7 @@ class cookie_bsqli:
 				if pos in self.exfil_data.keys():
 					break
 		for thrd in thrds:
-			while (thrd.is_alive()):
+			while thrd.is_alive():
 				sleep(0.5)
 		return self.__sort_data()
 
