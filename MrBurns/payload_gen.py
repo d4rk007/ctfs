@@ -23,6 +23,5 @@ def main():
                 }
     print(urlencode(fcgi_client.request(params, 'x')))
 
-
 if __name__ == '__main__':
     main()
