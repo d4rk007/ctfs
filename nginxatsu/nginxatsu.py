@@ -15,17 +15,16 @@ from urllib import parse
 import re
 from threading import Thread
 from time import sleep
+from sys import exit
 
 BASE_URL = 'http://<nginxatsu_ip>:<port>/'
 MAX_THRDS = 15 # If character overlap occurs decrease the MAX_THRDS int
 
 def get_req(session, url):
 	try:
-		r = session.get(url)
+		return session.get(url)
 	except ConnectionResetError as e:
-		print('Error sending GET request to CTF server:', e)
-		exit(1)
-	return r
+		exit('Error sending GET request to CTF server')
 
 class Aes:
 	def __init__(self, key):
