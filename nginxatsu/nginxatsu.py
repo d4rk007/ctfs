@@ -35,7 +35,7 @@ def ascii_gen(ascii_hex):
     else:
         return printable[:-6]
 
-# Annotation wrapper function to execute __send_payload method as a thread
+# Wrapper function to execute __send_payload method as a thread
 def threaded(method):
     def wrapper(*args):
         t = Thread(target=method, args=args)
