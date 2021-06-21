@@ -143,6 +143,7 @@ class cookie_bsqli:
 		for thrd in self.thrds:
 			thrd.join()
 		self.thrds.clear()
+
 	def __sort_data(self):
 		data = dict(sorted(self.exfil_data.items())).values()
 		self.exfil_data = {}
