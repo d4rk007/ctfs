@@ -1,6 +1,6 @@
 # Enmeration and reconnaissance:
-gobuster dir -u http://<IP>:<PORT>/ -w /usr/share/wordlists/dirb/common.txt -t 10 -e php
-gobuster dir -u http://<IP>:<PORT>/administrat -w /usr/share/wordlists/dirb/common.txt -t 10 -e php
+gobuster dir -u http://<IP>:<PORT>/ -w <wordlist> -t 10 -e php
+gobuster dir -u http://<IP>:<PORT>/administrat -w <wordlist> -t 10 -e php
 
 # Rabbit hole:
 	# identify amount of columns:
